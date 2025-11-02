@@ -1,92 +1,120 @@
-# Instagram Story Auto-Viewer Bot
+# IGStory Bot V2
 
-```
-   _         _____  ___         _____  __  __    __   __   _____  ___  __      
+   _         _____  ___         _____  __  __    __   __  _____  ___  __      
   /_\  /\ /\/__   \/___\ /\   /\\_   \/__\/ / /\ \ \ / _\/__   \/___\/__\/\_/\
  //_\\/ / \ \ / /\//  // \ \ / / / /\/_\  \ \/  \/ / \ \   / /\//  // \//\_ _/
 /  _  \ \_/ // / / \_//   \ V /\/ /_//__   \  /\  /  _\ \ / / / \_// _  \ / \ 
-\_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/ V.1
-                                                                   
-```
-If you find this tool useful, don't forget to **star ⭐** this repository and **follow my GitHub account** for future projects\!
+\_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/ 
+             AUTO VIEWER + LOVE FROM FOLLOWERS - V.2
 
-## Main Features
+An advanced Instagram bot for automatically viewing stories and interacting with users. Built with a robust, modular, and resilient architecture in Python.
 
-- **Interactive Setup**: Configuring the bot for the first time is made easy with a guide directly in the terminal.
-- **Session Management**: Saves the login session to avoid repeated logins that could trigger Instagram's suspicion.
-- **Anti-Double View**: The bot records stories that have been viewed and will not view them again within 24 hours, saving resources and mimicking normal behavior.
-- **Random Delay**: Uses variable time intervals between actions to avoid detection as bot activity.
-- **Random Sampling Following**: If you follow many accounts, the bot will select a random sample according to the specified limit (`MAX_FOLLOWING`) for each session, reducing the risk of being blocked.
-- **Telegram Integration**:
-  - Status reports when the bot starts and after each cycle is completed.
-  - `/status` command to check the bot's status, uptime, and latest logs at any time.
-  - Periodic "Health Ping" notifications to ensure the bot is still running.
-- **Proxy Support**: Can route traffic through an HTTP proxy for added security.
-- **Complete Logging**: All activities are logged to the console and the `bot.log` file for easy debugging.
-- **Universal Compatibility**: Equipped with a patch to ensure compatibility with various versions of `instagrapi`.
+## ✨ Features
 
-## Prerequisites
+- **Multiple Modes**:
+  - **Viewer Mode**: Automatically views stories from all the accounts you follow, mimicking human behavior.
+  - **Lover Mode**: A unique engagement strategy. It automatically likes the first story of each follower of a *specific target account*. This is a great way to gain visibility among users with similar interests.
+  - **Hybrid Mode**: Runs both Viewer and Lover tasks sequentially in a single, efficient cycle.
+- **Robust Login System**: Prioritizes `SESSION_ID` for stable, long-running sessions with an automatic fallback to username/password.
+- **Automatic Session Renewal**: If a session expires, the bot automatically re-logs in and updates the configuration file with the new `SESSION_ID`.
+- **Comprehensive Telegram Monitoring**:
+  - Get real-time bot status with the `/status` command.
+  - Receive startup alerts and periodic "health pings".
+  - Get a summary notification after each operational cycle.
+- **Smart Error Handling**: Intelligently handles common issues like session expiries and network connection errors to ensure maximum uptime.
+- **Dynamic Configuration**: Manages separate configurations for each mode and target in the `configs/` directory, allowing for different accounts or settings per task.
+- **Interactive Setup**: A user-friendly command-line interface guides you through the initial setup process.
+- **Anti-Detection Measures**:
+  - Randomized delays between actions to mimic human behavior.
+  - User-Agent rotation on each startup.
 
-- Python 3.8 or newer.
+## 📋 Requirements
 
-## Installation
+- Python 3.7+
+- Dependencies listed in `requirements.txt`:
+  - `instagrapi`
+  - `python-dotenv`
+  - `requests`
 
-1.  **Clone or Download the Project**
+## 🚀 Installation
+
+1.  **Clone the repository:**
     ```bash
     git clone https://github.com/cenmurong/igstory
     cd igstory
     ```
-    Or download the ZIP file and extract it.
 
-2.  **Install Dependencies**
-    Open a terminal or command prompt in the project folder and run:
+2.  **Install the dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
 
-## Usage
+## ▶️ Usage
 
-1.  **Run the Bot for the First Time**
-    Open a terminal in the project folder and run the command:
+1.  **Run the bot:**
     ```bash
-    python3 igstory.py
+    python run.py
     ```
 
-2.  **Follow the Interactive Setup**
-    When run for the first time, the bot will ask you to enter:
-    - Instagram Username & Password.
-    - Telegram Token & Chat ID (optional).
-    - Configuration for interval, following limit, and proxy.
+2.  **First-Time Setup:**
+    On the first run for any mode, the bot will launch an interactive setup wizard. You will be prompted to enter your Instagram credentials, Telegram details, and other settings.
 
-    Once completed, the configuration will be saved in the `.env` file.
+    - **`SESSION_ID`**: It's highly recommended to provide this for a more stable login. You can leave it blank to log in with a username/password, and the bot will automatically save the new `SESSION_ID` for future use.
 
-3.  **Running the Bot Subsequently**
-    Just run the same command again. The bot will read the configuration from `.env` and the session from `ig_session.json` to log in automatically.
-    ```bash
-    python3 igstory.py
-    ```
+3.  **Main Menu:**
+    After setup, you will be presented with the main menu to choose an operational mode:
+    - `1. Auto View Story (Following)`: Starts the viewer mode.
+    - `2. Love Story (Followers Target)`: Starts the lover mode for a specific target.
+    - `3. Hybrid: View + Love`: Runs both viewer and lover tasks in one cycle.
+    - `4. Reset Setup`: Allows you to re-run the setup for a specific mode.
+    - `0. Exit`: Shuts down the bot.
 
-## Configuration
+## ⚙️ Configuration
 
-All configurations are stored in the automatically created `.env` file.
+All configuration files are stored as `.env` files inside the `configs/` directory.
 
-- `INSTAGRAM_USERNAME`: Your Instagram account username.
-- `INSTAGRAM_PASSWORD`: Your Instagram account password.
-- `TELEGRAM_BOT_TOKEN`: API token from your Telegram bot (obtainable from @BotFather).
-- `TELEGRAM_CHAT_ID`: Unique ID of your chat with the bot (obtainable from @userinfobot).
-- `CHECK_INTERVAL`: Time interval (in seconds) between each story viewing cycle. Default: `600`.
-- `MAX_FOLLOWING`: The maximum number of following accounts whose stories will be checked in one cycle. Default: `100`.
-- `PROXY`: HTTP proxy address (example: `http://user:pass@ip:port`). Leave empty if not used.
+- **`configs/default.env`**: Used for the **Viewer** mode.
+- **`configs/lover_<target_username>.env`**: A unique file is created for each target in **Lover** mode (e.g., `lover_instagram.env`).
 
-## File Structure
+### Key Variables
 
-After running, the bot will create several files:
+- `SESSION_ID`: Your Instagram session cookie. The most reliable way to log in.
+- `INSTAGRAM_USERNAME`: Your username, used as a fallback if `SESSION_ID` is missing or invalid.
+- `INSTAGRAM_PASSWORD`: Your password, used for fallback login.
+- `TARGET_USERNAME`: The target account for Lover mode.
+- `TELEGRAM_BOT_TOKEN`: Your Telegram bot's API token.
+- `TELEGRAM_CHAT_ID`: The chat ID where notifications will be sent.
+- `CHECK_INTERVAL`: The delay in seconds between each operational cycle.
 
-- `.env`: Stores your credentials and configuration. **Do not share this file.**
-- `ig_session.json`: Stores Instagram login session data.
-- `seen_stories.json`: Database of stories that have been viewed to prevent double-viewing.
-- `bot.log`: Log of all bot activities.
+## 🤖 Telegram Integration
 
+The bot provides powerful monitoring capabilities through Telegram.
+
+- **Startup Alert**: Notifies you when the bot starts and in which mode.
+- **Cycle Summary**: Sends a brief report after each cycle (e.g., "Viewer: 42 stories viewed.").
+- **Health Ping**: Sends a "Bot OK" message every 30 minutes to confirm the bot is still alive.
+- **/status Command**: Send this command to your bot at any time to get a detailed, real-time status report including uptime, last run stats, and recent logs.
+
+## 📂 Project Structure
+
+```
+igstory/
+├── configs/              # Stores all .env configuration files
+├── core/                 # Core application logic
+│   ├── auth.py           # Handles login and session management
+│   ├── history.py        # Manages seen/loved history
+│   ├── lover.py          # Task logic for "Lover" mode
+│   ├── viewer.py         # Task logic for "Viewer" mode
+│   └── worker.py         # Generic worker that runs the main bot loop
+├── utils/                # Utility modules
+│   ├── config.py         # Manages loading and creating configs
+│   └── telegram.py       # Handles all Telegram communication
+├── run.py                # Main entry point of the application
+├── bot.log               # Log file for bot activities
+└── README.md             # This file
+```
+
+---
 ## Connect With Me
 
 <p>
@@ -95,6 +123,4 @@ After running, the bot will create several files:
   <a href="https://instagram.com/asaptrfr"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" /></a>
 </p>
 
-## Disclaimer
-
-The use of bots to automate activities on social media platforms like Instagram carries risks, including temporary or permanent restrictions on your account. Use this bot wisely and at your own risk. The developer is not responsible for any consequences that may arise from the use of this script.
+> **Disclaimer:** This bot is for educational purposes only. Automating Instagram activity may be against their terms of service. Use at your own risk.

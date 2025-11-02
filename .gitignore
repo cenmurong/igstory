@@ -1,0 +1,26 @@
+# --- Konfigurasi Sensitif ---
+# Jangan pernah mengunggah file konfigurasi yang berisi kredensial.
+configs/
+
+# --- Data & Riwayat ---
+# File-file ini dibuat saat runtime dan berisi data spesifik pengguna.
+data/
+*.json
+
+# --- Log & Backup ---
+# Abaikan file log dan file backup yang dibuat oleh skrip.
+*.log
+*.bak
+
+# --- Cache & File Sementara Python ---
+# File-file ini dibuat secara otomatis oleh Python.
+__pycache__/
+*.pyc
+
+# --- Lingkungan Virtual (Virtual Environment) ---
+venv/
+.venv/
+env/
+
+# --- Skrip Utilitas Lokal ---
+alat.py
