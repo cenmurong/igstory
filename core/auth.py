@@ -30,12 +30,15 @@ def handle_login(cl: Client, config: dict) -> bool:
         cl.get_timeline_feed()
         log_message("Login successful and verified.")
 
-        new_session_id = cl.sessionid
+        new_session_id = cl.get_cookie_value("sessionid")
+
         if env_file_path and new_session_id and env_file_path.exists():
             lines = [line for line in env_file_path.read_text().splitlines() if not line.strip().startswith("SESSION_ID=")]
             lines.append(f"SESSION_ID={new_session_id}")
             env_file_path.write_text("\n".join(lines))
             log_message(f"New SESSION_ID successfully saved to {env_file_path.name}!")
+        elif not new_session_id:
+            log_message("WARNING: Login was successful, but could not retrieve a new SESSION_ID.")
 
         return True
     except Exception as e:
