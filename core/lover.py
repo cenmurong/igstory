@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from instagrapi import Client
 from instagrapi.exceptions import LoginRequired
 import time, random, json
@@ -45,3 +46,47 @@ def lover_task(cl: Client, config: dict):
 def run_lover(config):
 
     run_worker(config, lover_task)
+=======
+from instagrapi import Client
+from instagrapi.exceptions import LoginRequired
+import time, random, json
+from pathlib import Path
+from utils.logger import log_message
+from utils.telegram import telegram_monitor
+from .auth import handle_login
+from .history import load_history, save_history
+from .worker import run_worker
+
+LOVED_FILE = Path("loved_first.json")
+
+def lover_task(cl: Client, config: dict):
+
+    LOVED = load_history(LOVED_FILE)
+    target_id = cl.user_id_from_username(config['TARGET'])
+    followers = cl.user_followers(target_id, amount=config['MAX_PROCESS'])
+    follower_users = list(followers.values())
+    random.shuffle(follower_users)
+
+    loved = 0
+    for user in follower_users:
+        if str(user.pk) in LOVED: continue
+        stories = cl.user_stories(user.pk)
+        if stories:
+            first = stories[0]
+            cl.story_like(first.pk)
+            LOVED[str(user.pk)] = time.time()
+            log_message(f"LOVED a story from @{user.username}")
+            loved += 1
+        time.sleep(random.uniform(10, 18))
+    save_history(LOVED_FILE, LOVED)
+
+    msg = f"Lover: {loved} first stories loved from @{config['TARGET']}'s followers."
+    log_message(msg)
+    telegram_monitor.last_run_stats.update({"time": time.strftime("%H:%M:%S"), "viewed": 0, "loved": loved})
+    telegram_monitor.logs.append(msg)
+    telegram_monitor.send_message(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], msg)
+
+def run_lover(config):
+
+    run_worker(config, lover_task)
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950

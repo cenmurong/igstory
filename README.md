@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 # IGStory Bot V2
 
+=======
+# intagram Auto View Story
+```
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
    _         _____  ___         _____  __  __    __   __  _____  ___  __      
   /_\  /\ /\/__   \/___\ /\   /\\_   \/__\/ / /\ \ \ / _\/__   \/___\/__\/\_/\
  //_\\/ / \ \ / /\//  // \ \ / / / /\/_\  \ \/  \/ / \ \   / /\//  // \//\_ _/
 /  _  \ \_/ // / / \_//   \ V /\/ /_//__   \  /\  /  _\ \ / / / \_// _  \ / \ 
 \_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/ 
+<<<<<<< HEAD
              AUTO VIEWER + LOVE FROM FOLLOWERS - V.2
 
 An advanced Instagram bot for automatically viewing stories and interacting with users. Built with a robust, modular, and resilient architecture in Python.
@@ -15,6 +21,18 @@ An advanced Instagram bot for automatically viewing stories and interacting with
   - **Viewer Mode**: Automatically views stories from all the accounts you follow, mimicking human behavior.
   - **Lover Mode**: A unique engagement strategy. It automatically likes the first story of each follower of a *specific target account*. This is a great way to gain visibility among users with similar interests.
   - **Hybrid Mode**: Runs both Viewer and Lover tasks sequentially in a single, efficient cycle.
+=======
+            INSTAGRAM AUTO VIEWER X LOVE FROM FOLLOWERS - V.2
+```
+
+An advanced Instagram bot for automatically viewing stories and interacting with users. Built with a robust, modular, and resilient architecture in Python.
+
+##  Features
+
+- **Multiple Modes**:
+  - **Auto Viewer**: Automatically views stories from the accounts you follow.
+  - **Auto Lover**: Automatically likes the first story of a target account's followers.
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 - **Robust Login System**: Prioritizes `SESSION_ID` for stable, long-running sessions with an automatic fallback to username/password.
 - **Automatic Session Renewal**: If a session expires, the bot automatically re-logs in and updates the configuration file with the new `SESSION_ID`.
 - **Comprehensive Telegram Monitoring**:
@@ -28,7 +46,11 @@ An advanced Instagram bot for automatically viewing stories and interacting with
   - Randomized delays between actions to mimic human behavior.
   - User-Agent rotation on each startup.
 
+<<<<<<< HEAD
 ## 📋 Requirements
+=======
+##  Requirements
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 
 - Python 3.7+
 - Dependencies listed in `requirements.txt`:
@@ -36,7 +58,11 @@ An advanced Instagram bot for automatically viewing stories and interacting with
   - `python-dotenv`
   - `requests`
 
+<<<<<<< HEAD
 ## 🚀 Installation
+=======
+##  Installation
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 
 1.  **Clone the repository:**
     ```bash
@@ -49,7 +75,11 @@ An advanced Instagram bot for automatically viewing stories and interacting with
     pip install -r requirements.txt
     ```
 
+<<<<<<< HEAD
 ## ▶️ Usage
+=======
+##  Usage
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 
 1.  **Run the bot:**
     ```bash
@@ -65,11 +95,19 @@ An advanced Instagram bot for automatically viewing stories and interacting with
     After setup, you will be presented with the main menu to choose an operational mode:
     - `1. Auto View Story (Following)`: Starts the viewer mode.
     - `2. Love Story (Followers Target)`: Starts the lover mode for a specific target.
+<<<<<<< HEAD
     - `3. Hybrid: View + Love`: Runs both viewer and lover tasks in one cycle.
     - `4. Reset Setup`: Allows you to re-run the setup for a specific mode.
     - `0. Exit`: Shuts down the bot.
 
 ## ⚙️ Configuration
+=======
+    - `3. Hybrid: View + Love`: Soon!
+    - `4. Reset Setup`: Allows you to re-run the setup for a specific configuration file.
+    - `0. Exit`: Shuts down the application.
+
+##  Configuration
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 
 All configuration files are stored as `.env` files inside the `configs/` directory.
 
@@ -86,7 +124,11 @@ All configuration files are stored as `.env` files inside the `configs/` directo
 - `TELEGRAM_CHAT_ID`: The chat ID where notifications will be sent.
 - `CHECK_INTERVAL`: The delay in seconds between each operational cycle.
 
+<<<<<<< HEAD
 ## 🤖 Telegram Integration
+=======
+##  Telegram Integration
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
 
 The bot provides powerful monitoring capabilities through Telegram.
 
@@ -123,4 +165,8 @@ igstory/
   <a href="https://instagram.com/asaptrfr"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" /></a>
 </p>
 
+<<<<<<< HEAD
 > **Disclaimer:** This bot is for educational purposes only. Automating Instagram activity may be against their terms of service. Use at your own risk.
+=======
+> **Disclaimer:** This bot is for educational purposes only. Automating Instagram activity may be against their terms of service. Use at your own risk.
+>>>>>>> 328ddc985d31dd6fa23c6463835628e2a959e950
