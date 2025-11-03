@@ -16,9 +16,10 @@ def main_menu():
     print("Select Mode:")
     print("===================================")
     print("  1. Auto View Story (Following)")
-    print("  2. Love Story (Followers Target)")
-    print("  3. Hybrid: View + Love")
-    print("  4. Reset Setup")
+    print("  2. Love First Story (Followers Target)")
+    print("  3. Hybrid: View (Following) + Love (Followers)")
+    print("  4. Hybrid: View (Following) + View (Followers)")
+    print("  5. Reset Setup")
     print("  0. Exit")
     print("===================================")
     print("")
@@ -26,10 +27,10 @@ def main_menu():
 
 def setup_menu():
     print("\nSelect a configuration to reset:")
-    print("-----------------------------------------")
-    print("  1. Mode Viewer (uses default.env)")
-    print("  3. Mode Hybrid (uses default.env)")
-    print("  2. Mode Lover (configs/lover_TARGET.env)")
+    print("-----------------------------------------------------")
+    print("  1. Viewer / Default (resets default.env)")
+    print("  2. Lover (resets lover_TARGET.env)")
+    print("  3. Follower Viewer (resets follower_viewer_TARGET.env)")
     print("-----------------------------------------")
     print("")
     print("  0. Back to Main Menu")
@@ -39,7 +40,7 @@ def setup_menu():
 if __name__ == "__main__":
     setup_logger()
 
-    from core import run_viewer, run_lover, run_hybrid
+    from core import run_viewer, run_lover, run_hybrid_parallel, viewer_task, lover_task, follower_viewer_task
     from utils.telegram import telegram_monitor
 
     while True:
@@ -55,25 +56,42 @@ if __name__ == "__main__":
             if not target:
                 print("Target is empty! Canceled.")
             else:
-                config = load_config(target=target)
+                config = load_config(target=target, config_type='lover')
                 if config:
                     telegram_monitor.send_startup_alert(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], f"Lover @{target}")
                     log_message(f"MODE 2: LOVE → @{target}")
-                    run_lover(config)
+                    
+                    run_lover(config) 
         elif choice == "3":
-            config = load_config()
-            if config:
-                telegram_monitor.send_startup_alert(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], "Hybrid")
-                log_message("MODE 3: HYBRID")
-                run_hybrid(config)
+            print("\n--- Hybrid Mode: View (Following) + Love (Followers) ---")
+            target = input("Enter target username for Love task (without @): ").strip().lstrip('@')
+            if not target:
+                print("Target is empty! Canceled.")
+            else:
+                config_viewer = load_config()
+                config_lover = load_config(target=target, config_type='lover')
+                if config_viewer and config_lover:
+                    mode_name = f"Hybrid (View + Love @{target})"
+                    telegram_monitor.send_startup_alert(config_viewer['TELEGRAM_TOKEN'], config_viewer['TELEGRAM_CHAT'], mode_name)
+                    log_message(f"MODE 3: {mode_name}")
+                    run_hybrid_parallel([(viewer_task, config_viewer, "Viewer"), (lover_task, config_lover, "Lover")])
         elif choice == "4":
+            print("\n--- Hybrid Mode: View (Following) + View (Followers) ---")
+            target = input("Enter target username for Follower View task (without @): ").strip().lstrip('@')
+            if not target:
+                print("Target is empty! Canceled.")
+            else:
+                config_viewer = load_config()
+                config_follower_viewer = load_config(target=target, config_type='follower_viewer')
+                if config_viewer and config_follower_viewer:
+                    mode_name = f"Hybrid (View + View Followers @{target})"
+                    telegram_monitor.send_startup_alert(config_viewer['TELEGRAM_TOKEN'], config_viewer['TELEGRAM_CHAT'], mode_name)
+                    log_message(f"MODE 4: {mode_name}")
+                    run_hybrid_parallel([(viewer_task, config_viewer, "Viewer"), (follower_viewer_task, config_follower_viewer, "FollowerViewer")])
+        elif choice == "5":
             setup_choice = setup_menu()
             if setup_choice == "1":
                 print("\n--- Resetting Viewer Mode Setup ---")
-                load_config(setup_only=True)
-                print("\nSetup complete.")
-            elif setup_choice == "3":
-                print("\n--- Resetting Hybrid Mode Setup (uses default.env) ---")
                 load_config(setup_only=True)
                 print("\nSetup complete.")
             elif setup_choice == "2":
@@ -81,8 +99,16 @@ if __name__ == "__main__":
                 if not target:
                     print("Target is empty! Canceled.")
                 else:
-                    print(f"\n--- Resetting Lover Mode Setup for @{target} ---")
-                    load_config(target=target, setup_only=True)
+                    print(f"\n--- Resetting Lover config for @{target} ---")
+                    load_config(target=target, setup_only=True, config_type='lover')
+                    print("\nSetup complete.")
+            elif setup_choice == "3":
+                target = input("\nEnter the target username whose configuration you want to reset (without @): ").strip().lstrip('@')
+                if not target:
+                    print("Target is empty! Canceled.")
+                else:
+                    print(f"\n--- Resetting Follower Viewer config for @{target} ---")
+                    load_config(target=target, setup_only=True, config_type='follower_viewer')
                     print("\nSetup complete.")
             else:
                 print("Returning to main menu...")

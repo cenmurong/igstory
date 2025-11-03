@@ -2,7 +2,7 @@ import time
 import random
 from instagrapi import Client
 import requests
-from instagrapi.exceptions import LoginRequired, ChallengeRequired
+from instagrapi.exceptions import LoginRequired, ChallengeRequired, TwoFactorRequired
 from utils.logger import log_message
 from utils.telegram import telegram_monitor
 from .auth import handle_login
@@ -23,15 +23,31 @@ def _perform_login_with_retries(cl: Client, config: dict) -> bool:
             if handle_login(cl, config):
                 return True
            
-            login_attempts += 1
-            if login_attempts < 3:
-                log_message(f"Login failed. Retrying in 60 seconds... (Attempt {login_attempts} of 3)")
-                time.sleep(60)
-        except ChallengeRequired:
-            log_message("Waiting 60 seconds for you to approve the login...")
-            time.sleep(60)
-           
-            continue
+        except (ChallengeRequired, TwoFactorRequired) as e:
+            log_message("Instagram requires a verification code to continue.")
+            try:
+                
+                print("\n[!] A 6-digit code may have been sent to your registered Email or SMS.")
+                print("    If you only see a 'This was me' prompt, approve it and press Enter here without typing a code.")
+                code = input("Enter the 6-digit code (or leave blank to retry after approval): ").strip()
+                
+                if not code:
+                    log_message("No code entered. Waiting 60 seconds for you to approve the login manually...")
+                    time.sleep(60)
+                    continue 
+                
+                log_message("Verifying code with Instagram...")
+                cl.challenge_code_verify(code)
+                
+                log_message("Verification successful! Login complete.")
+                cl.dump_settings(config.get('ENV_FILE_PATH').with_suffix('.session.json'))
+                return True 
+            except Exception as e:
+                log_message(f"Challenge verification failed: {e}. Retrying login process...")
+        
+        login_attempts += 1
+        log_message(f"Login failed. Retrying in 60 seconds... (Attempt {login_attempts} of 3)")
+        time.sleep(60)
     
     log_message("Login failed after 3 attempts. Stopping bot.")
     return False
@@ -78,6 +94,9 @@ def run_worker(config: dict, task_function):
         except requests.exceptions.ConnectionError as e:
             log_message(f"Connection issue: {e}. Retrying in 5 minutes.")
             time.sleep(300)
+        except KeyboardInterrupt:
+            log_message("Bot stopped by user (Ctrl+C).")
+            break
         except Exception as e:
             log_message(f"Error in worker loop: {e}")
             time.sleep(60)

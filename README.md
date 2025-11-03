@@ -15,9 +15,12 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 - **Multiple Modes**:
   - **Viewer Mode**: Automatically views stories from all the accounts you follow, mimicking human behavior.
   - **Lover Mode**: A unique engagement strategy. It automatically likes the first story of each follower of a *specific target account*. This is a great way to gain visibility among users with similar interests.
-  - **Hybrid Mode**: Runs both Viewer and Lover tasks sequentially in a single, efficient cycle.
+  - **Follower Viewer Mode**: Automatically views all stories from the followers of a *specific target account*.
+  - **Parallel Hybrid Modes**: Run multiple tasks simultaneously, each in its own thread for maximum efficiency.
+    - **View (Following) + Love (Followers)**
+    - **View (Following) + View (Followers)**
 - **Robust Login System**: Prioritizes `SESSION_ID` for stable, long-running sessions with an automatic fallback to username/password.
-- **Automatic Session Renewal**: If a session expires, the bot automatically re-logs in and updates the configuration file with the new `SESSION_ID`.
+- **Centralized Login & Session Sync**: Performs a single, central login for hybrid modes and automatically syncs the new `SESSION_ID` back to your configuration file after a successful login.
 - **Comprehensive Telegram Monitoring**:
   - Get real-time bot status with the `/status` command.
   - Receive startup alerts and periodic "health pings".
@@ -65,9 +68,10 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 3.  **Main Menu:**
     After setup, you will be presented with the main menu to choose an operational mode:
     - `1. Auto View Story (Following)`: Starts the viewer mode.
-    - `2. Love Story (Followers Target)`: Starts the lover mode for a specific target.
-    - `3. Hybrid: View + Love`: Runs both viewer and lover tasks in one cycle.
-    - `4. Reset Setup`: Allows you to re-run the setup for a specific mode.
+    - `2. Love First Story (Followers Target)`: Starts the lover mode for a specific target.
+    - `3. Hybrid: View (Following) + Love (Followers)`: Runs viewer and lover tasks in parallel.
+    - `4. Hybrid: View (Following) + View (Followers)`: Runs viewer and follower-viewer tasks in parallel.
+    - `5. Reset Setup`: Allows you to re-run the setup for a specific mode or target.
     - `0. Exit`: Shuts down the bot.
 
 ## ⚙️ Configuration
@@ -75,7 +79,8 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 All configuration files are stored as `.env` files inside the `configs/` directory.
 
 - **`configs/default.env`**: Used for the **Viewer** mode.
-- **`configs/lover_<target_username>.env`**: A unique file is created for each target in **Lover** mode (e.g., `lover_instagram.env`).
+- **`configs/lover_<target>.env`**: A unique file for each target in **Lover** mode.
+- **`configs/follower_viewer_<target>.env`**: A unique file for each target in **Follower Viewer** mode.
 
 ### Key Variables
 
@@ -102,11 +107,13 @@ The bot provides powerful monitoring capabilities through Telegram.
 igstory/
 ├── configs/              # Stores all .env configuration files
 ├── core/                 # Core application logic
-│   ├── auth.py           # Handles login and session management
-│   ├── history.py        # Manages seen/loved history
+│   ├── auth.py           # Handles login and session authentication
+│   ├── follower_viewer.py# Task logic for "Follower Viewer" mode
+│   ├── history.py        # Manages interaction history (seen/loved)
+│   ├── hybrid.py         # Handles parallel task execution
 │   ├── lover.py          # Task logic for "Lover" mode
 │   ├── viewer.py         # Task logic for "Viewer" mode
-│   └── worker.py         # Generic worker that runs the main bot loop
+│   └── worker.py         # Generic worker for single-threaded modes
 ├── utils/                # Utility modules
 │   ├── config.py         # Manages loading and creating configs
 │   └── telegram.py       # Handles all Telegram communication

@@ -1,0 +1,10 @@
+configs/
+data/
+*.json
+*.log
+*.bak
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
