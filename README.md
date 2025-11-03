@@ -5,11 +5,8 @@
  //_\\/ / \ \ / /\//  // \ \ / / / /\/_\  \ \/  \/ / \ \   / /\//  // \//\_ _/
 /  _  \ \_/ // / / \_//   \ V /\/ /_//__   \  /\  /  _\ \ / / / \_// _  \ / \ 
 \_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/ 
-<<<<<<< HEAD
-             AUTO VIEWER + LOVE FROM FOLLOWERS - V.3
-=======
              AUTO VIEWER + LOVE FROM FOLLOWERS - V.2.4
->>>>>>> c381f44 (update README.me)
+
 ```
 
 An advanced Instagram bot for automatically viewing stories and interacting with users. Built with a robust, modular, and resilient architecture in Python.
@@ -92,10 +89,6 @@ All configuration files are stored as `.env` files inside the `configs/` directo
 - `SESSION_ID`: Your Instagram session cookie. The most reliable way to log in.
 - `INSTAGRAM_USERNAME` & `INSTAGRAM_PASSWORD`: Your credentials, used as a fallback if `SESSION_ID` is missing or invalid.
 - `PROXY`: Optional proxy URL (e.g., `http://user:pass@host:port`).
-
-## ⚫ Blacklist
-
-You can prevent the bot from interacting with certain users by adding their usernames to a `blacklist.txt` file in the root directory. Create the file and add one username per line. The bot will automatically skip these users in all modes.
 
 ## 🤖 Telegram Integration
 
