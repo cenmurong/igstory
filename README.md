@@ -5,7 +5,7 @@
  //_\\/ / \ \ / /\//  // \ \ / / / /\/_\  \ \/  \/ / \ \   / /\//  // \//\_ _/
 /  _  \ \_/ // / / \_//   \ V /\/ /_//__   \  /\  /  _\ \ / / / \_// _  \ / \ 
 \_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/ 
-             AUTO VIEWER + LOVE FROM FOLLOWERS - V.2
+             AUTO VIEWER + LOVE FROM FOLLOWERS - V.2.3
 ```
 
 An advanced Instagram bot for automatically viewing stories and interacting with users. Built with a robust, modular, and resilient architecture in Python.
@@ -14,31 +14,28 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 
 - **Multiple Modes**:
   - **Viewer Mode**: Automatically views stories from all the accounts you follow, mimicking human behavior.
-  - **Lover Mode**: A unique engagement strategy. It automatically likes the first story of each follower of a *specific target account*. This is a great way to gain visibility among users with similar interests.
-  - **Follower Viewer Mode**: Automatically views all stories from the followers of a *specific target account*.
+  - **Lover Mode**: A unique engagement strategy. It automatically likes the first story of each follower of *one or more specific target accounts*. If multiple targets are provided, the bot will randomly select one for each cycle.
+  - **Follower Viewer Mode**: Automatically views all stories from the followers of *one or more specific target accounts*. If multiple targets are provided, the bot will randomly select one for each cycle.
   - **Parallel Hybrid Modes**: Run multiple tasks simultaneously, each in its own thread for maximum efficiency.
-    - **View (Following) + Love (Followers)**
-    - **View (Following) + View (Followers)**
-- **Robust Login System**: Prioritizes `SESSION_ID` for stable, long-running sessions with an automatic fallback to username/password.
-- **Centralized Login & Session Sync**: Performs a single, central login for hybrid modes and automatically syncs the new `SESSION_ID` back to your configuration file after a successful login.
-- **Comprehensive Telegram Monitoring**:
-  - Get real-time bot status with the `/status` command.
-  - Receive startup alerts and periodic "health pings".
+    - `Hybrid: View (Following) + Love (Followers)`
+    - `Hybrid: View (Following) + View (Followers)`
+- **Robust Login System**: Prioritizes `SESSION_ID` for stable sessions, falls back to username/password, and supports interactive handling for 2FA/Challenge codes.
+  - Get real-time bot status with the `/status` command, including server CPU/RAM usage.
+  - Receive startup alerts, periodic "health pings", and critical failure notifications.
   - Get a summary notification after each operational cycle.
-- **Smart Error Handling**: Intelligently handles common issues like session expiries and network connection errors to ensure maximum uptime.
-- **Dynamic Configuration**: Manages separate configurations for each mode and target in the `configs/` directory, allowing for different accounts or settings per task.
 - **Interactive Setup**: A user-friendly command-line interface guides you through the initial setup process.
-- **Anti-Detection Measures**:
-  - Randomized delays between actions to mimic human behavior.
+  - **Customizable Delays**: Fully configurable delays between actions for each mode to better mimic human behavior.
   - User-Agent rotation on each startup.
+  - **Proxy Support**: Route traffic through a proxy for enhanced anonymity.
+  - **Blacklist**: Easily exclude specific users from interactions.
 
 ## 📋 Requirements
 
 - Python 3.7+
-- Dependencies listed in `requirements.txt`:
   - `instagrapi`
   - `python-dotenv`
   - `requests`
+  - `psutil`
 
 ## 🚀 Installation
 
@@ -65,11 +62,11 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 
     - **`SESSION_ID`**: It's highly recommended to provide this for a more stable login. You can leave it blank to log in with a username/password, and the bot will automatically save the new `SESSION_ID` for future use.
 
-3.  **Main Menu:**
+3.  **Choose a Mode:**
     After setup, you will be presented with the main menu to choose an operational mode:
     - `1. Auto View Story (Following)`: Starts the viewer mode.
-    - `2. Love First Story (Followers Target)`: Starts the lover mode for a specific target.
-    - `3. Hybrid: View (Following) + Love (Followers)`: Runs viewer and lover tasks in parallel.
+    - `2. Love First Story (Followers Target)`: Starts the lover mode. You can enter one or more comma-separated usernames as targets.
+    - `3. Hybrid: View (Following) + Love (Followers)`: Runs viewer and lover tasks in parallel. You will be prompted for the lover task's target(s).
     - `4. Hybrid: View (Following) + View (Followers)`: Runs viewer and follower-viewer tasks in parallel.
     - `5. Reset Setup`: Allows you to re-run the setup for a specific mode or target.
     - `0. Exit`: Shuts down the bot.
@@ -79,27 +76,24 @@ An advanced Instagram bot for automatically viewing stories and interacting with
 All configuration files are stored as `.env` files inside the `configs/` directory.
 
 - **`configs/default.env`**: Used for the **Viewer** mode.
-- **`configs/lover_<target>.env`**: A unique file for each target in **Lover** mode.
-- **`configs/follower_viewer_<target>.env`**: A unique file for each target in **Follower Viewer** mode.
+- **`configs/lover.env`**: Used for the **Lover** mode (stores all targets inside).
+- **`configs/follower_viewer.env`**: Used for the **Follower Viewer** mode (stores all targets inside).
 
 ### Key Variables
 
 - `SESSION_ID`: Your Instagram session cookie. The most reliable way to log in.
-- `INSTAGRAM_USERNAME`: Your username, used as a fallback if `SESSION_ID` is missing or invalid.
-- `INSTAGRAM_PASSWORD`: Your password, used for fallback login.
-- `TARGET_USERNAME`: The target account for Lover mode.
-- `TELEGRAM_BOT_TOKEN`: Your Telegram bot's API token.
-- `TELEGRAM_CHAT_ID`: The chat ID where notifications will be sent.
-- `CHECK_INTERVAL`: The delay in seconds between each operational cycle.
+- `INSTAGRAM_USERNAME` & `INSTAGRAM_PASSWORD`: Your credentials, used as a fallback if `SESSION_ID` is missing or invalid.
+- `PROXY`: Optional proxy URL (e.g., `http://user:pass@host:port`).
+
+## ⚫ Blacklist
+
+You can prevent the bot from interacting with certain users by adding their usernames to a `blacklist.txt` file in the root directory. Create the file and add one username per line. The bot will automatically skip these users in all modes.
 
 ## 🤖 Telegram Integration
 
 The bot provides powerful monitoring capabilities through Telegram.
 
-- **Startup Alert**: Notifies you when the bot starts and in which mode.
-- **Cycle Summary**: Sends a brief report after each cycle (e.g., "Viewer: 42 stories viewed.").
-- **Health Ping**: Sends a "Bot OK" message every 30 minutes to confirm the bot is still alive.
-- **/status Command**: Send this command to your bot at any time to get a detailed, real-time status report including uptime, last run stats, and recent logs.
+- **Critical Alerts**: Notifies you if the bot fails to log in after multiple attempts.
 
 ## 📂 Project Structure
 

@@ -25,9 +25,21 @@ def run_task_in_thread(session_id: str, config: dict, task_function, task_name: 
         log_message(f"CRITICAL: [{task_name}] Thread failed to log in with shared session: {e}")
         return 
 
+    from .lover import lover_task
+    from .follower_viewer import follower_viewer_task
+
     while True:
         try:
-            actions_count = task_function(cl, config) or 0
+            
+            current_config = config.copy()
+            if task_function in [lover_task, follower_viewer_task] and 'TARGETS' in current_config and current_config['TARGETS']:
+                selected_target = random.choice(current_config['TARGETS'])
+                current_config['TARGET'] = selected_target
+
+                log_message(f"🎯 [{task_name}] Selected target for this cycle: @{selected_target}")
+
+
+            actions_count = task_function(cl, current_config) or 0
 
             if actions_count > 0:
                 interval = random.randint(config['MIN_INTERVAL'], config['MAX_INTERVAL'])
@@ -58,7 +70,7 @@ def run_hybrid_parallel(tasks_with_configs: list):
 
     login_config = tasks_with_configs[0][1]
 
-    log_message("--- HYBRID MODE: INITIATING CENTRALIZED LOGIN ---")
+    log_message(f"--- HYBRID MODE: INITIATING CENTRALIZED LOGIN (using config from '{login_config['ENV_FILE_PATH'].name}') ---")
     cl = Client()
     cl.private_requests = True
     cl.user_agent = random.choice(USER_AGENTS)

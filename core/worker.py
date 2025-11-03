@@ -50,6 +50,14 @@ def _perform_login_with_retries(cl: Client, config: dict) -> bool:
         time.sleep(60)
     
     log_message("Login failed after 3 attempts. Stopping bot.")
+    
+    telegram_token = config.get('TELEGRAM_TOKEN')
+    telegram_chat_id = config.get('TELEGRAM_CHAT')
+    error_message = (
+        "🚨 *CRITICAL: LOGIN FAILED* 🚨\n\n"
+        "The bot failed to log in after 3 attempts and has stopped. Please check your credentials, session, or potential Instagram blocks and restart the bot manually."
+    )
+    telegram_monitor.send_message(telegram_token, telegram_chat_id, error_message)
     return False
 
 def run_worker(config: dict, task_function):
@@ -78,8 +86,17 @@ def run_worker(config: dict, task_function):
 
     while True:
         try:
+            from .lover import lover_task
+            from .follower_viewer import follower_viewer_task
+
+            current_config = config.copy()
+            if task_function in [lover_task, follower_viewer_task] and 'TARGETS' in current_config and current_config['TARGETS']:
+                selected_target = random.choice(current_config['TARGETS'])
+                current_config['TARGET'] = selected_target
+                log_message(f"🎯 Selected target for this cycle: @{selected_target}")
+
             cl.get_timeline_feed()
-            actions_count = task_function(cl, config) or 0
+            actions_count = task_function(cl, current_config) or 0
 
             if actions_count > 0:
                 interval = random.randint(config['MIN_INTERVAL'], config['MAX_INTERVAL'])

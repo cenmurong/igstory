@@ -40,16 +40,18 @@ def viewer_task(cl: Client, config: dict):
             log_message(log_line)
             detailed_logs.append(f"• {log_line}")
             viewed += len(new_pks)
-        time.sleep(random.uniform(6, 12))
+        time.sleep(random.uniform(config['VIEWER_MIN_DELAY'], config['VIEWER_MAX_DELAY']))
     save_history(SEEN_FILE, SEEN)
 
     summary_msg = f"✅ *Viewer Cycle Complete*\nTotal stories viewed: {viewed}"
     log_message(f"Viewer: {viewed} stories viewed.")
-    telegram_monitor.last_run_stats.update({"time": time.strftime("%H:%M:%S"), "viewed": viewed, "loved": 0})
+    # Only update relevant stats to avoid overwriting other task stats in hybrid mode
+    telegram_monitor.last_run_stats.update({"time": time.strftime("%H:%M:%S"), "viewed": viewed})
     telegram_monitor.logs.append(f"Viewer: {viewed} stories viewed.")
 
     report = f"{summary_msg}\n\n*Details:*\n" + "\n".join(detailed_logs) if detailed_logs else summary_msg
-    telegram_monitor.send_message(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], report)
+    if viewed > 0:
+        telegram_monitor.send_message(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], report)
     
     return viewed
 
