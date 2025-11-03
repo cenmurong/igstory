@@ -29,6 +29,8 @@ def run_task_in_thread(session_id: str, config: dict, task_function, task_name: 
         try:
             task_function(cl, config)
             log_message(f"Task '{task_name}' complete. Waiting for {config['INTERVAL']} seconds.")
+            wait_end = time.time() + config['INTERVAL']
+            telegram_monitor.next_run_times[task_name] = time.strftime("%H:%M:%S", time.localtime(wait_end))
             time.sleep(config['INTERVAL'])
         except KeyboardInterrupt:
             log_message(f"Thread '{task_name}' received stop signal.")

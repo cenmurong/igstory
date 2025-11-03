@@ -8,11 +8,11 @@ from .auth import handle_login
 from .history import load_history, save_history
 from .worker import run_worker
 
-LOVED_FILE = Path("data/loved_first.json")
-
 def lover_task(cl: Client, config: dict):
-
-    LOVED = load_history(LOVED_FILE)
+    target_username = config['TARGET']
+    loved_file = Path(f"data/loved_{target_username}.json")
+    
+    LOVED = load_history(loved_file)
     target_id = cl.user_id_from_username(config['TARGET'])
     followers = cl.user_followers(target_id, amount=config['MAX_PROCESS'])
     follower_users = list(followers.values())
@@ -32,7 +32,7 @@ def lover_task(cl: Client, config: dict):
             detailed_logs.append(f"• {log_line}")
             loved += 1
         time.sleep(random.uniform(10, 18))
-    save_history(LOVED_FILE, LOVED)
+    save_history(loved_file, LOVED)
 
     summary_msg = f"💖 *Lover Cycle Complete*\nTarget: @{config['TARGET']}\nTotal stories loved: {loved}"
     log_message(f"Lover: {loved} first stories loved from @{config['TARGET']}'s followers.")

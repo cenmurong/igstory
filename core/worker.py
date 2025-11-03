@@ -82,7 +82,7 @@ def run_worker(config: dict, task_function):
             task_function(cl, config)
 
             wait_end = time.time() + config['INTERVAL']
-            telegram_monitor.next_run_time = time.strftime("%H:%M:%S", time.localtime(wait_end))
+            telegram_monitor.next_run_times['main'] = time.strftime("%H:%M:%S", time.localtime(wait_end))
             while time.time() < wait_end:
                 telegram_monitor.check_commands(telegram_token, telegram_chat_id)
                 telegram_monitor.send_health_ping(telegram_token, telegram_chat_id)

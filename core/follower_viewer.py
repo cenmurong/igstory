@@ -5,13 +5,13 @@ from utils.logger import log_message
 from utils.telegram import telegram_monitor
 from .history import load_history, save_history
 
-FOLLOWER_SEEN_FILE = Path("data/follower_seen_stories.json")
-
 def follower_viewer_task(cl: Client, config: dict):
     """
     Views stories from followers of a target account.
     """
-    SEEN = load_history(FOLLOWER_SEEN_FILE)
+    target_username = config['TARGET']
+    follower_seen_file = Path(f"data/follower_seen_{target_username}.json")
+    SEEN = load_history(follower_seen_file)
     target_id = cl.user_id_from_username(config['TARGET'])
     followers = cl.user_followers(target_id, amount=config['MAX_PROCESS'])
     follower_users = list(followers.values())
@@ -32,7 +32,7 @@ def follower_viewer_task(cl: Client, config: dict):
             detailed_logs.append(f"• {log_line}")
             viewed_count += len(story_pks_to_view)
         time.sleep(random.uniform(8, 15))
-    save_history(FOLLOWER_SEEN_FILE, SEEN)
+    save_history(follower_seen_file, SEEN)
 
     summary_msg = f"👀 *Follower Viewer Cycle Complete*\nTarget: @{config['TARGET']}\nTotal stories viewed: {viewed_count}"
     log_message(f"Follower Viewer: {viewed_count} stories viewed from @{config['TARGET']}'s followers.")

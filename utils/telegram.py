@@ -9,7 +9,7 @@ class TelegramMonitor:
         self.last_health_ping = 0
         self.bot_start_time = time.time()
         self.last_run_stats = {"time": "N/A", "viewed": 0, "loved": 0}
-        self.next_run_time = "N/A"
+        self.next_run_times = {} # Changed from string to dict
 
     def send_message(self, token, chat_id, message):
         if not token or not chat_id: return
@@ -27,6 +27,13 @@ class TelegramMonitor:
         d, r = divmod(uptime, 86400)
         h, r = divmod(r, 3600)
         m, _ = divmod(r, 60)
+
+        # Find the earliest next run time if in hybrid mode
+        if self.next_run_times:
+            next_run_display = min(self.next_run_times.values())
+        else:
+            next_run_display = "N/A"
+
         return (
             "*IG BOT STATUS*\n\n"
             f"*Status:* RUNNING\n"
@@ -34,7 +41,7 @@ class TelegramMonitor:
             f"*Last Run:* {self.last_run_stats['time']}\n"
             f"*Viewed:* {self.last_run_stats['viewed']}\n"
             f"*Loved:* {self.last_run_stats['loved']}\n"
-            f"*Next Run:* {self.next_run_time}\n\n"
+            f"*Next Run:* {next_run_display}\n\n"
             "*Latest Logs:*\n"
             f"```\n" + "\n".join(list(self.logs)[-5:]) + "\n```"
         )
