@@ -79,14 +79,19 @@ def run_worker(config: dict, task_function):
     while True:
         try:
             cl.get_timeline_feed()
-            task_function(cl, config)
+            actions_count = task_function(cl, config) or 0
 
-            wait_end = time.time() + config['INTERVAL']
+            if actions_count > 0:
+                interval = random.randint(config['MIN_INTERVAL'], config['MAX_INTERVAL'])
+                log_message(f"Task complete ({actions_count} actions). Waiting for {interval}s (normal).")
+            else:
+                interval = config['SHORT_INTERVAL']
+                log_message(f"Task complete (0 actions). Waiting for {interval}s (short).")
+
+            wait_end = time.time() + interval
             telegram_monitor.next_run_times['main'] = time.strftime("%H:%M:%S", time.localtime(wait_end))
-            while time.time() < wait_end:
-                telegram_monitor.check_commands(telegram_token, telegram_chat_id)
-                telegram_monitor.send_health_ping(telegram_token, telegram_chat_id)
-                time.sleep(5)
+            log_message(f"Task complete. Waiting for {interval} seconds until next cycle.")
+            time.sleep(interval)
         except LoginRequired as e:
             log_message(f"Session dead or expired: {e}. Attempting to re-login...")
             if not _perform_login_with_retries(cl, config):

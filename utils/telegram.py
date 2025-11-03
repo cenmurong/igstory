@@ -28,17 +28,21 @@ class TelegramMonitor:
         h, r = divmod(r, 3600)
         m, _ = divmod(r, 60)
 
-        # Find the earliest next run time if in hybrid mode
-        if self.next_run_times:
-            next_run_display = min(self.next_run_times.values())
+        if self.last_run_stats['time'] == "N/A":
+            last_run_display = "Waiting for first cycle..."
+            next_run_display = "Waiting for first cycle..."
         else:
-            next_run_display = "N/A"
+            last_run_display = self.last_run_stats['time']
+            if self.next_run_times:
+                next_run_display = min(self.next_run_times.values())
+            else:
+                next_run_display = "N/A"
 
         return (
             "*IG BOT STATUS*\n\n"
             f"*Status:* RUNNING\n"
             f"*Uptime:* {int(d)}d {int(h)}h {int(m)}m\n"
-            f"*Last Run:* {self.last_run_stats['time']}\n"
+            f"*Last Run:* {last_run_display}\n"
             f"*Viewed:* {self.last_run_stats['viewed']}\n"
             f"*Loved:* {self.last_run_stats['loved']}\n"
             f"*Next Run:* {next_run_display}\n\n"

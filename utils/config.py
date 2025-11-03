@@ -28,7 +28,9 @@ def create_env_interactive(env_file, target=None, config_type='lover'):
     config['MAX_PROCESS'] = input("Max followers target (love/follower view mode, default 80): ").strip() or "80"
     config['TELEGRAM_BOT_TOKEN'] = input("Telegram Bot Token (leave blank if not used): ").strip()
     config['TELEGRAM_CHAT_ID'] = input("Telegram Chat ID (leave blank if not used): ").strip()
-    config['CHECK_INTERVAL'] = input("Interval (seconds, default 600): ").strip() or "600"
+    config['MIN_INTERVAL'] = input("Minimum interval (seconds, default 600): ").strip() or "600"
+    config['MAX_INTERVAL'] = input("Maximum interval (seconds, default 700): ").strip() or "700"
+    config['SHORT_INTERVAL'] = input("Short interval if no activity (seconds, default 300): ").strip() or "300"
 
     env_file.write_text("\n".join([f"{k}={v}" for k, v in config.items()]))
     print(f"\nFile {env_file} created successfully!")
@@ -59,6 +61,8 @@ def load_config(target=None, setup_only=False, config_type='lover'):
         'MAX_PROCESS': int(os.getenv('MAX_PROCESS', '80')),
         'TELEGRAM_TOKEN': os.getenv('TELEGRAM_BOT_TOKEN'),
         'TELEGRAM_CHAT': os.getenv('TELEGRAM_CHAT_ID'),
-        'INTERVAL': int(os.getenv('CHECK_INTERVAL', '600')),
+        'MIN_INTERVAL': int(os.getenv('MIN_INTERVAL', '600')),
+        'MAX_INTERVAL': int(os.getenv('MAX_INTERVAL', '900')),
+        'SHORT_INTERVAL': int(os.getenv('SHORT_INTERVAL', '300')),
         'ENV_FILE_PATH': env_file
     }

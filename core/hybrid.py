@@ -27,11 +27,18 @@ def run_task_in_thread(session_id: str, config: dict, task_function, task_name: 
 
     while True:
         try:
-            task_function(cl, config)
-            log_message(f"Task '{task_name}' complete. Waiting for {config['INTERVAL']} seconds.")
-            wait_end = time.time() + config['INTERVAL']
+            actions_count = task_function(cl, config) or 0
+
+            if actions_count > 0:
+                interval = random.randint(config['MIN_INTERVAL'], config['MAX_INTERVAL'])
+                log_message(f"Task '{task_name}' complete ({actions_count} actions). Waiting for {interval}s (normal).")
+            else:
+                interval = config['SHORT_INTERVAL']
+                log_message(f"Task '{task_name}' complete (0 actions). Waiting for {interval}s (short).")
+
+            wait_end = time.time() + interval
             telegram_monitor.next_run_times[task_name] = time.strftime("%H:%M:%S", time.localtime(wait_end))
-            time.sleep(config['INTERVAL'])
+            time.sleep(interval)
         except KeyboardInterrupt:
             log_message(f"Thread '{task_name}' received stop signal.")
             break

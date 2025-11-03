@@ -40,3 +40,5 @@ def follower_viewer_task(cl: Client, config: dict):
 
     report = f"{summary_msg}\n\n*Details:*\n" + "\n".join(detailed_logs) if detailed_logs else summary_msg
     telegram_monitor.send_message(config['TELEGRAM_TOKEN'], config['TELEGRAM_CHAT'], report)
+
+    return viewed_count
