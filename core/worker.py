@@ -120,5 +120,9 @@ def run_worker(config: dict, task_function):
             log_message("Bot stopped by user (Ctrl+C).")
             break
         except Exception as e:
-            log_message(f"Error in worker loop: {e}")
+            error_str = str(e)
+            if error_str.strip().startswith(('<!DOCTYPE html>', '<script>')):
+                log_message("Error in worker loop: Received an unexpected HTML response from Instagram. This may indicate a session issue or a block. Retrying in 60s.")
+            else:
+                log_message(f"Error in worker loop: {e}")
             time.sleep(60)
