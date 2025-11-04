@@ -66,7 +66,7 @@ def _sync_session_id(cl: Client, env_file_path):
     This ensures that the next run can use the fresh session ID.
     """
     try:
-        new_session_id = cl.get_cookie_value("sessionid")
+        new_session_id = cl.sessionid
         if env_file_path and new_session_id and env_file_path.exists():
             lines = [line for line in env_file_path.read_text(encoding='utf-8').splitlines() if not line.strip().startswith("SESSION_ID=")]
             lines.append(f"SESSION_ID={new_session_id}")
