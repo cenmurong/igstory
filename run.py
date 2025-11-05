@@ -1,5 +1,6 @@
 import os
 import time
+from pathlib import Path
 from utils import setup_logger, log_message, load_config
 
 BANNER = r"""
@@ -20,6 +21,7 @@ def main_menu():
     print("  3. Hybrid: View (Following) + Love (Followers)")
     print("  4. Hybrid: View (Following) + View (Followers)")
     print("  5. Reset Setup")
+    print("  6. Reset Login Sessions")
     print("  0. Exit")
     print("===================================")
     print("")
@@ -36,6 +38,28 @@ def setup_menu():
     print("  0. Back to Main Menu")
     print("")
     return input("Choice: ").strip()
+
+def reset_login_sessions():
+    """Deletes all .session.json files to force re-login."""
+    print("\n--- Resetting Login Sessions ---")
+    config_dir = Path("configs")
+    if not config_dir.exists():
+        print("Configuration directory not found. Nothing to do.")
+        time.sleep(2)
+        return
+
+    session_files = list(config_dir.glob("*.session.json"))
+    if not session_files:
+        print("No active login sessions found to reset.")
+        time.sleep(2)
+        return
+
+    for f in session_files:
+        f.unlink()
+        log_message(f"Deleted session file: {f.name}")
+    print(f"\nSuccessfully deleted {len(session_files)} session file(s).")
+    print("The bot will use username/password on the next run.")
+    time.sleep(3)
 
 if __name__ == "__main__":
     setup_logger()
@@ -106,6 +130,9 @@ if __name__ == "__main__":
             else:
                 print("Returning to main menu...")
                 continue
+        elif choice == "6":
+            reset_login_sessions()
+            continue
         elif choice == "0":
             break
         else:
