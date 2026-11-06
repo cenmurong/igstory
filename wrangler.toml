@@ -1,0 +1,6 @@
+name = "igstory-dashboard"
+compatibility_date = "2026-11-06"
+
+[assets]
+directory = "./public"
+not_found_handling = "single-page-application"

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IGStory Bot V2 — Dashboard</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="hero">
+  <pre class="banner">
+   _         _____  ___         _____  __  __    __   __  _____  ___  __
+  /_\  /\ /\/__   \/___\ /\   /\\_   \/__\/ / /\ \ \ / _\/__   \/___\/__\/\_/\
+ //_\\/ / \ \ / /\//  // \ \ / / / /\/_\  \ \/  \/ / \ \   / /\//  // \//\_ _/
+/  _  \ \_/ // / / \_//   \ V /\/ /_//__   \  /\  /  _\ \ / / / \_// _  \ / \ \
+\_/ \_/\___/ \/  \___/     \_/\____/\__/    \/  \/   \__/ \/  \___/\/ \_/ \_/
+             AUTO VIEWER + LOVE FROM FOLLOWERS - V.2.4
+  </pre>
+  <p class="tagline">Live web dashboard for the Instagram story bot</p>
+</header>
+
+<main>
+  <section class="cards">
+    <div class="card">
+      <h2>1. Auto View Story (Following)</h2>
+      <p>Automatically views stories from all accounts you follow, mimicking human behavior.</p>
+      <span class="badge">Viewer Mode</span>
+    </div>
+    <div class="card">
+      <h2>2. Love First Story (Followers Target)</h2>
+      <p>Likes the first story of each follower of one or more target accounts.</p>
+      <span class="badge">Lover Mode</span>
+    </div>
+    <div class="card">
+      <h2>3. Hybrid: View + Love</h2>
+      <p>Runs viewer and lover tasks in parallel, each in its own thread.</p>
+      <span class="badge">Parallel</span>
+    </div>
+    <div class="card">
+      <h2>4. Hybrid: View + View</h2>
+      <p>Views stories from both following and followers of targets simultaneously.</p>
+      <span class="badge">Parallel</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Bot Status</h2>
+    <div class="status-row"><span>Deploy</span><strong id="deploy-status">Live</strong></div>
+    <div class="status-row"><span>Backend</span><strong>Python (instagrapi)</strong></div>
+    <div class="status-row"><span>Monitoring</span><strong>Telegram alerts + health pings</strong></div>
+    <div class="status-row"><span>Anti-detection</span><strong>Random delays, UA rotation, proxy support</strong></div>
+  </section>
+
+  <section class="panel">
+    <h2>Run Locally</h2>
+    <pre class="code">git clone &lt;repo-url&gt;
+cd igstory
+pip install -r requirements.txt
+python run.py</pre>
+  </section>
+</main>
+
+<footer>
+  <p>IGStory Bot V2.4 — for educational purposes only. Automating Instagram may violate their Terms of Service.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
